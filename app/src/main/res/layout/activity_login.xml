@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="24dp"
+    tools:context=".LoginActivity"
+
+    >
+
+    <!-- App Logo or Name -->
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/goose_icon"
+        app:tint="@color/blue" />
+    <!-- Bottom Register Text -->
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Log into your GooseNet account!"
+        android:textColor="@color/blue"
+        android:textAlignment="center"
+        android:paddingBottom="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/invalidCredsTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your Username or Password were Incorrect!"
+        android:textColor="#FF004C"
+        android:textAlignment="center"
+        android:paddingBottom="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textStyle="bold"
+        android:visibility="gone"
+        />
+    <!-- Username Field -->
+    <EditText
+        android:id="@+id/username_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:drawableStart="@android:drawable/ic_menu_edit"
+        android:padding="12dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_background"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <!-- Password Field -->
+    <EditText
+        android:id="@+id/password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:drawableStart="@android:drawable/ic_lock_lock"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_background"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <!-- Sign In Button -->
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign In"
+        android:textAllCaps="false"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/blue"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <!-- Spacer to push bottom text down -->
+
+
+    <!-- Bottom Register Text -->
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/register_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_registered_create_an_account"
+        android:textColor="@color/blue"
+        android:textAlignment="center"
+        android:paddingBottom="24dp"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>

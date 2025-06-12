@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="Profile" />
+
+    <item
+        android:id="@+id/nav_connect"
+        android:icon="@drawable/ic_link"
+        android:title="Connect" />
+
+    <item
+        android:id="@+id/nav_activities"
+        android:icon="@drawable/ic_run"
+        android:title="Activities" />
+
+    <item
+        android:id="@+id/nav_planned"
+        android:icon="@drawable/ic_calender"
+        android:title="Planned" />
+
+    <item
+        android:id="@+id/nav_sleep"
+        android:icon="@drawable/ic_sleep"
+        android:title="Sleep" />
+
+</menu>

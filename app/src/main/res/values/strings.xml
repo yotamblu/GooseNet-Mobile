@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">GooseNet Mobile</string>
+    <string name="not_registered_create_an_account">Not registered? Create an account</string>
+    <string-array name="user_roles">
+        <item>Select Role</item>
+        <item>Athlete</item>
+        <item>Coach</item>
+    </string-array>
+
 </resources>
