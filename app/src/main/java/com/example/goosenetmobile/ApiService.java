@@ -19,7 +19,7 @@ public class ApiService {
 
 
 
-    final static  String GOOSEAPI_BASE_URL = "https://gooseapi.onrender.com/api";
+    final static  String GOOSEAPI_BASE_URL = "https://gooseapi.bsite.net/api";
 
 
 
@@ -29,7 +29,7 @@ public class ApiService {
         final boolean[] result = {false};
         String jsonData = new Gson().toJson(userData);
         System.out.println(jsonData);
-        HttpsHelper.sendPost(GOOSEAPI_BASE_URL + "/userRegistration", jsonData,new HttpsHelper.HttpCallback() {
+        HttpsHelper.sendPost(GOOSEAPI_BASE_URL + "/registration", jsonData,new HttpsHelper.HttpCallback() {
             @Override
             public void onSuccess(String response) {
                 result[0] =
@@ -52,30 +52,7 @@ public class ApiService {
         }
         return result[0];
     }
-    public   static String AlarmClock(){
-        final  String[] responseAlarm = {""};
-         HttpsHelper.sendGet(GOOSEAPI_BASE_URL + "/alarmClock", new HttpsHelper.HttpCallback() {
-            @Override
-            public void onSuccess(String response) {
-                responseAlarm[0] = response;
-            }
 
-            @Override
-            public void onError(Exception ex) {
-                responseAlarm[0] = ex.getMessage();
-            }
-        });
-        return  responseAlarm[0];
-    }
-
-
-//    public void changeFragment(Fragment newFragment) {
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.nav_host_fragment, newFragment);
-//        fragmentTransaction.addToBackStack(null); // Optional: allows back navigation
-//        fragmentTransaction.commit();
-//    }
 
 
 
