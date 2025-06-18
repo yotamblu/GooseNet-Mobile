@@ -131,7 +131,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 System.out.println(userData.getUserName());
                                 System.out.println(userData.getPassword());
                                 apiKey = ApiService.getApiKey(userData.getUserName(),userData.getPassword());
-                                System.out.println("KEYYYYY:" + apiKey);
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
