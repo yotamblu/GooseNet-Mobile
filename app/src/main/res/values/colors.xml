@@ -3,4 +3,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#2196F3</color>
+    <color name="blue_dark">#1976D2</color>
+    <color name="blue_light">#BBDEFB</color>
+    <color name="colorPrimary">#1976D2</color> <!-- Blue 700 -->
+    <color name="colorPrimaryDark">#004BA0</color> <!-- Blue 900 -->
+    <color name="colorAccent">#64B5F6</color> <!-- Blue 300 -->
+    <color name="colorLightBlue">#BBDEFB</color> <!-- Blue 100 -->
+    <color name="colorBackground">#E3F2FD</color> <!-- Blue 50 -->
+    <color name="colorTextDark">#0D47A1</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="intervalCard">#E3F2FD</color> <!-- Light blue, matches primary theme -->
+    <color name="subIntervalCard">#FFFFFF</color> <!-- White background for sub steps -->
+
 </resources>

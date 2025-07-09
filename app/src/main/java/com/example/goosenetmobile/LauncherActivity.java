@@ -39,7 +39,6 @@ public class LauncherActivity extends AppCompatActivity {
 
         animationView.playAnimation();
         animationView.loop(false);
-        getPreferences(0).edit().clear().apply();
         animationView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -48,6 +47,7 @@ public class LauncherActivity extends AppCompatActivity {
                     startActivity(new Intent(LauncherActivity.this,LoginActivity.class));
                 }else{
                     //TODO: initialize moving to main activity if logged in (with intent)
+                    startActivity(new Intent(LauncherActivity.this,MainPageActivity.class));
                 }
 
                 finish();
