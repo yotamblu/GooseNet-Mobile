@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true"
+    android:padding="24dp"
+    android:id="@+id/main">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Back Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:text="Back"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:insetLeft="20dp"
+            android:insetRight="20dp"
+            android:layout_gravity="start"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp" />
+
+        <!-- Profile Image -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/loading"
+            android:background="@drawable/circle_background"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Athlete profile image" />
+
+        <!-- Username -->
+        <TextView
+            android:id="@+id/usernameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\@userName"
+            android:textSize="20sp"
+            android:textColor="@color/blue"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Buttons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPlannedWorkouts"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="Planned Workouts"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddWorkout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="Add Workout"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCompletedWorkouts"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="Completed Workouts"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddToFlock"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="Add to Flock"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSleepData"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="Sleep Data"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTrainingSummary"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="Training Summary"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp" />
+
+    </LinearLayout>
+</ScrollView>

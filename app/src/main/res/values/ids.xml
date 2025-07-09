@@ -1,0 +1,6 @@
+<resources>
+    <item name="repeat_input" type="id"/>
+    <item name="substeps_container_tag" type="id"/>
+
+
+</resources>
