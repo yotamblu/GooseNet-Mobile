@@ -21,15 +21,18 @@ import com.example.goosenetmobile.classes.RequestTokenResponse;
 import com.example.goosenetmobile.classes.User;
 import com.example.goosenetmobile.classes.UserAuthData;
 import com.example.goosenetmobile.classes.UserAuthResponse;
+import com.example.goosenetmobile.classes.WorkoutSummary;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.PhantomReference;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -40,6 +43,34 @@ public class ApiService {
 
 
     final static  String GOOSEAPI_BASE_URL = "https://gooseapi.bsite.net/api";
+
+    public static List<WorkoutSummary> getWorkoutSummaries(Context context, String date,String athleteName ){
+        String apiKey = PreferenceManager.getDefaultSharedPreferences(context).getString("apiKey","");
+        CountDownLatch latch = new CountDownLatch(1);
+        final List<WorkoutSummary>[] workoutList = new ArrayList[1];
+        String requestUrl = GOOSEAPI_BASE_URL + "/workoutSummary?apiKey=" + apiKey + "&userName=" + athleteName + "&date=" + date;
+        HttpsHelper.sendGet(requestUrl, new HttpsHelper.HttpCallback() {
+            @Override
+            public void onSuccess(String response) {
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<WorkoutSummary>>() {}.getType();
+                workoutList[0] =  gson.fromJson(response, listType);
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                System.out.println("ERR:" + ex.getMessage());
+                latch.countDown();
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return workoutList[0];
+    }
 
 
     public static boolean addToFlock(String athleteName,String flockName,Context context){

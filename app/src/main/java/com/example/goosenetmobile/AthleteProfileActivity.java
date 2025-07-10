@@ -18,10 +18,12 @@ public class AthleteProfileActivity extends AppCompatActivity {
 
     private Button addWorkoutBtn;
     private Button addToFlockButton;
-
+    private Button completedWorkoutsButton;
     private void InitializeButtonObjects(){
         addWorkoutBtn = findViewById(R.id.btnAddWorkout);
         addToFlockButton  = findViewById(R.id.btnAddToFlock);
+        completedWorkoutsButton = findViewById(R.id.btnCompletedWorkouts);
+
     }
 
     @Override
@@ -65,6 +67,12 @@ public class AthleteProfileActivity extends AppCompatActivity {
             intent.putExtra("athleteName",athleteName);
             startActivity(intent);
 
+        });
+
+        completedWorkoutsButton.setOnClickListener(v ->{
+            Intent intent = new Intent(AthleteProfileActivity.this, CompletedWorkoutsActivity.class);
+            intent.putExtra("athleteName",athleteName);
+            startActivity(intent);
         });
 
     }

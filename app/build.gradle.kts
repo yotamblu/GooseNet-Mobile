@@ -51,7 +51,7 @@ android {
             )
         }
 
-       
+
     }
 }
 val geckoviewChannel: String by rootProject.extra
@@ -81,5 +81,6 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.constraintlayout)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+    implementation ("org.osmdroid:osmdroid-android:6.1.16")
 
 }
