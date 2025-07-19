@@ -5,6 +5,7 @@ import static com.bumptech.glide.load.resource.drawable.DrawableDecoderCompat.ge
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -142,7 +143,7 @@ public class WorkoutSummaryAdapter extends BaseAdapter {
             holder.workoutAvgPaceTextView = convertView.findViewById(R.id.workoutAvgPaceTextView);
             holder.workoutAvgHeartRateTextView = convertView.findViewById(R.id.workoutAvgHeartRateTextView);
             holder.workoutMapView = convertView.findViewById(R.id.workoutMapView);
-
+            holder.mainLayout = convertView.findViewById(R.id.mainCard);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -150,6 +151,21 @@ public class WorkoutSummaryAdapter extends BaseAdapter {
 
         WorkoutSummary workout = workoutList.get(position);
 
+        holder.mainLayout.setOnClickListener(v ->{
+            Intent intent = new Intent(context, WorkoutActivity.class);
+            intent.putExtra("workoutName", workout.getWorkoutName());
+            intent.putExtra("workoutId", workout.getWorkoutId());
+            intent.putExtra("workoutDurationInSeconds", workout.getWorkoutDurationInSeconds());
+            intent.putExtra("workoutDistanceInMeters", workout.getWorkoutDistanceInMeters());
+            intent.putExtra("workoutAvgHR", workout.getWorkoutAvgHR());
+            intent.putExtra("workoutAvgPaceInMinKm", workout.getWorkoutAvgPaceInMinKm());
+            intent.putExtra("workoutCoordsJsonStr", workout.getWorkoutCoordsJsonStr());
+            intent.putExtra("workoutDate", workout.getWorkoutDate());
+            intent.putExtra("profilePicData", workout.getProfilePicData());
+            intent.putExtra("athleteName", workout.getAthleteName());
+
+            context.startActivity(intent);
+        });
         // For demo, no dynamic profile pic — set default
         holder.profilePicImageView.setImageResource(R.drawable.ic_profile);
 

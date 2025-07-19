@@ -76,7 +76,7 @@ public class MyAthletesFragment extends Fragment {
                     progressOverLay.setVisibility(View.GONE);
                     athletesView.setVisibility(View.VISIBLE);
                 });
-            } catch (RuntimeException e) {
+            } catch (RuntimeException ignored) {
 
             }
 

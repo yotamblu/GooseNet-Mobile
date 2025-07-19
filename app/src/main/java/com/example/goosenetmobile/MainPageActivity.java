@@ -40,6 +40,7 @@ public class MainPageActivity extends AppCompatActivity {
     private MyAthletesFragment myAthletesFragment;
     private FlocksFragment flocksFragment;
     private AthleteWorkoutsFragment athleteWorkoutsFragment;
+    private PlannedWorkoutsFragment plannedWorkoutsFragment;
     private void initializeObjects() {
         bottomNavBar = findViewById(R.id.bottom_navigation);
     }
@@ -52,6 +53,7 @@ public class MainPageActivity extends AppCompatActivity {
         myAthletesFragment = new MyAthletesFragment();
         flocksFragment = new FlocksFragment();
         athleteWorkoutsFragment = new AthleteWorkoutsFragment();
+        plannedWorkoutsFragment = new PlannedWorkoutsFragment();
     }
 
 
@@ -102,6 +104,10 @@ public class MainPageActivity extends AppCompatActivity {
                     case "Activities":
                         changeFragment(MainPageActivity.this, athleteWorkoutsFragment,R.id.nav_host_fragment);
                     break;
+
+                    case "Planned":
+                        changeFragment(MainPageActivity.this,plannedWorkoutsFragment,R.id.nav_host_fragment);
+                        break;
                 }
 
 

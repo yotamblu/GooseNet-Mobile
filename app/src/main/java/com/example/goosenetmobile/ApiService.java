@@ -10,17 +10,22 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.goosenetmobile.classes.ActivityData;
 import com.example.goosenetmobile.classes.AddToFlockData;
 import com.example.goosenetmobile.classes.AthleteCard;
 import com.example.goosenetmobile.classes.BasicMessage;
 import com.example.goosenetmobile.classes.GetAthletesResponseData;
 import com.example.goosenetmobile.classes.GetRoleResponse;
 import com.example.goosenetmobile.classes.IsConnectedResponse;
+import com.example.goosenetmobile.classes.PlannedWorkout;
 import com.example.goosenetmobile.classes.PlannedWorkoutData;
+import com.example.goosenetmobile.classes.PlannedWorkoutResponse;
 import com.example.goosenetmobile.classes.RequestTokenResponse;
 import com.example.goosenetmobile.classes.User;
 import com.example.goosenetmobile.classes.UserAuthData;
 import com.example.goosenetmobile.classes.UserAuthResponse;
+import com.example.goosenetmobile.classes.Workout;
+import com.example.goosenetmobile.classes.WorkoutExtensiveData;
 import com.example.goosenetmobile.classes.WorkoutSummary;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -43,6 +48,145 @@ public class ApiService {
 
 
     final static  String GOOSEAPI_BASE_URL = "https://gooseapi.bsite.net/api";
+    public static PlannedWorkoutResponse getPlannedWorkoutById(String workoutId){
+        final PlannedWorkoutResponse[] result = {null};
+        String requestUrl = GOOSEAPI_BASE_URL + "/plannedWorkout/byId?id=" + workoutId;
+        CountDownLatch latch = new CountDownLatch(1);
+        HttpsHelper.sendGet(requestUrl, new HttpsHelper.HttpCallback() {
+            @Override
+            public void onSuccess(String response) {
+                if(!JsonParser.parseString(response).getAsJsonObject().has("message")){
+                    result[0] = new Gson().fromJson(response,PlannedWorkoutResponse.class);
+                }
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                Log.e("API SERVICE","ERR:" + ex.getMessage());
+                latch.countDown();
+            }
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return result[0];
+    }
+
+    //NO LEADING ZEROS FOR THE DATE!!!!
+    public static List<PlannedWorkout> getPlannedWorkoutsByDate(String athleteName, String date,Context context){
+        final List[] result = {null};
+        String apiKey = PreferenceManager.getDefaultSharedPreferences(context).getString("apiKey","");
+        CountDownLatch latch = new CountDownLatch(1);
+        String requestUrl = GOOSEAPI_BASE_URL + "/plannedWorkout/byDate?athleteName=" + athleteName + "&apiKey=" + apiKey + "&date=" + date;
+        System.out.println(requestUrl);
+        HttpsHelper.sendGet(requestUrl, new HttpsHelper.HttpCallback() {
+            @Override
+            public void onSuccess(String response) {
+                if(JsonParser.parseString(response).isJsonArray()){
+                    Type listType = new TypeToken<List<PlannedWorkout>>() {}.getType();
+
+                    // Deserialize JSON string into List<Person>
+                    List<PlannedWorkout> plannedWorkouts = new Gson().fromJson(response, listType);
+                    result[0] = plannedWorkouts;
+                }
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                Log.e("API SERVICE","ERR:" + ex.getMessage());
+                latch.countDown();
+            }
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return  result[0];
+    }
+
+
+
+
+
+    public static ActivityData getWorkoutById(String athleteName, String workoutId){
+        final ActivityData[] result = {null};
+        CountDownLatch latch = new CountDownLatch(1);
+
+        String requestUrl = GOOSEAPI_BASE_URL + "/workoutSummary/getWorkout?userName=" + athleteName + "&id=" + workoutId;
+
+        HttpsHelper.sendGet(requestUrl, new HttpsHelper.HttpCallback() {
+            @Override
+            public void onSuccess(String response) {
+                if(!JsonParser.parseString(response).getAsJsonObject().has("message")){
+                    result[0] = new Gson().fromJson(response,ActivityData.class);
+                }
+                Log.i("API SERVICE",response);
+                latch.countDown();
+
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                Log.e("API service error","ERR:" + ex.getMessage());
+                latch.countDown();
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return result[0];
+    }
+
+
+    public static WorkoutExtensiveData getWorkoutExtensiveData(String athleteName,String workoutId){
+        final WorkoutExtensiveData[] result = {null};
+
+        CountDownLatch latch = new CountDownLatch(1);
+        String requestUrl = GOOSEAPI_BASE_URL + "/workoutSummary/data?userName=" + athleteName + "&workoutId=" + workoutId;
+        Log.i("API SERVICE",requestUrl);
+        HttpsHelper.sendGet(requestUrl, new HttpsHelper.HttpCallback() {
+            @Override
+            public void onSuccess(String response) {
+               if(!JsonParser.parseString(response).getAsJsonObject().has("message")){
+                 result[0] =   new Gson().fromJson(response,WorkoutExtensiveData.class);
+
+               }
+               System.out.println(response);
+               latch.countDown();
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                System.out.println("ERR:" + ex.getMessage());
+                latch.countDown();
+            }
+        });
+
+        try{
+            latch.await();
+        }catch (Exception ex){
+
+        }
+        result[0].getWorkoutLaps().get(result[0].getWorkoutLaps().size() - 1).lapDistanceInKilometers /= 100f;
+
+
+        return  result[0];
+    }
+
+
+
 
     public static List<WorkoutSummary> getWorkoutSummaries(Context context, String date,String athleteName ){
         String apiKey = PreferenceManager.getDefaultSharedPreferences(context).getString("apiKey","");

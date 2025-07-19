@@ -82,5 +82,6 @@ dependencies {
     implementation(libs.constraintlayout)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
     implementation ("org.osmdroid:osmdroid-android:6.1.16")
+    implementation (libs.mpandroidchart)
 
 }

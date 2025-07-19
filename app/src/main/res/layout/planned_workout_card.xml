@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/plannedWorkoutCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="16dp"
+    app:strokeColor="@color/blue"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Coach Profile Picture -->
+        <ImageView
+            android:id="@+id/coachProfilePic"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Coach Profile Picture"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/lapChartView"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:background="@drawable/circle_background"
+            android:src="@drawable/ic_profile" />
+
+        <!-- Coach Name -->
+        <TextView
+            android:id="@+id/coachName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Coach John Smith"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/coachProfilePic"
+            app:layout_constraintTop_toTopOf="@id/coachProfilePic"
+            app:layout_constraintBottom_toBottomOf="@id/coachProfilePic"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Custom Lap Chart View -->
+        <com.example.goosenetmobile.CustomLapChartView
+            android:id="@+id/lapChartView"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/coachProfilePic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

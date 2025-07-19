@@ -81,38 +81,43 @@ public class ConnectAthleteFragment extends Fragment {
         copyButton = view.findViewById(R.id.btnCopyCoachId);
 
         new Thread(() ->{
-             coachId = ApiService.getCoachId(PreferenceManager.getDefaultSharedPreferences(requireContext()).getString("loggedInUserName",""));
-            copyButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Coach ID", coachId);
-                    clipboard.setPrimaryClip(clip);
-                    Toast.makeText(requireContext(), "Coach ID copied", Toast.LENGTH_SHORT).show();
-                }
-            });
 
-            whatsappButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me on GooseNet! My coach ID is: " + coachId);
-                    sendIntent.setType("text/plain");
-                    sendIntent.setPackage("com.whatsapp");
+            try {
 
-                    try {
-                        startActivity(sendIntent);
-                    } catch (ActivityNotFoundException e) {
-                        Toast.makeText(requireContext(), "WhatsApp not installed", Toast.LENGTH_SHORT).show();
+
+                coachId = ApiService.getCoachId(PreferenceManager.getDefaultSharedPreferences(requireContext()).getString("loggedInUserName", ""));
+                copyButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Coach ID", coachId);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(requireContext(), "Coach ID copied", Toast.LENGTH_SHORT).show();
                     }
+                });
 
-                }
-            });
-             requireActivity().runOnUiThread(() -> {
-                 coachIdTV.setText("Your Coach ID:" + coachId);
-             });
 
+                whatsappButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me on GooseNet! My coach ID is: " + coachId);
+                        sendIntent.setType("text/plain");
+                        sendIntent.setPackage("com.whatsapp");
+
+                        try {
+                            startActivity(sendIntent);
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(requireContext(), "WhatsApp not installed", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+                requireActivity().runOnUiThread(() -> {
+                    coachIdTV.setText("Your Coach ID:" + coachId);
+                });
+            }catch (Exception ignored){}
         }).start();
         super.onViewCreated(view, savedInstanceState);
     }

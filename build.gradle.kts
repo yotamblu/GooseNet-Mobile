@@ -24,6 +24,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") } // ✅ This is required for MPAndroidChart
         maven {
             url = uri("https://maven.mozilla.org/maven2/")
         }
