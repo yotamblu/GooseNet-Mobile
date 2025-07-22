@@ -9,17 +9,27 @@ public class PlannedWorkout {
     private List<PlannedInterval> intervals;
     private String coachName;
     private List<String> athleteNames;
-
+    private String workoutId;
     public PlannedWorkout() {
     }
 
-    public PlannedWorkout(String date, String workoutName, String description, List<PlannedInterval> intervals, String coachName, List<String> athleteNames) {
+    public PlannedWorkout(String date, String workoutName, String description, List<PlannedInterval> intervals, String coachName, List<String> athleteNames,String workoutId) {
         this.date = date;
         this.workoutName = workoutName;
         this.description = description;
         this.intervals = intervals;
         this.coachName = coachName;
         this.athleteNames = athleteNames;
+        this.workoutId = workoutId;
+    }
+
+
+    public String getWorkoutId() {
+        return workoutId;
+    }
+
+    public void setWorkoutId(String workoutId) {
+        this.workoutId = workoutId;
     }
 
     public String getDate() {

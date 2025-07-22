@@ -45,6 +45,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -268,6 +269,7 @@ public class WorkoutActivity extends AppCompatActivity {
             WorkoutExtensiveData data = ApiService.getWorkoutExtensiveData(athleteNameStr,String.valueOf(workoutId));
             List<FinalLap> lapsList = data.getWorkoutLaps();
             lapsList.get(lapsList.size() -1).lapDurationInSeconds /= 100f;
+            Log.i("LAPS",new Gson().toJson(lapsList));
             lapChartView.setLaps(lapsList,WorkoutActivity.this);
             // Optional: Add header
             runOnUiThread(() ->{

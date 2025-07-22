@@ -110,11 +110,11 @@ public class PlannedWorkoutsFragment extends Fragment {
 
         if(((Activity)requireContext()) instanceof MainPageActivity){
             athleteName = PreferenceManager.getDefaultSharedPreferences(requireContext()).getString(GooseNetUtil.IS_LOGGEDIN_KEY,"");
-            title.setText("View your completed workouts");
+            title.setText("View your planned workouts");
 
         }else{
             athleteName = requireActivity().getIntent().getStringExtra("athleteName");
-            title.setText("View Completed Workouts By @" + athleteName);
+            title.setText("View Planned Workouts For @" + athleteName);
         }
         return view;
     }

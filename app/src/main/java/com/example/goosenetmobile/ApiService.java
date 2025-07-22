@@ -58,6 +58,7 @@ public class ApiService {
                 if(!JsonParser.parseString(response).getAsJsonObject().has("message")){
                     result[0] = new Gson().fromJson(response,PlannedWorkoutResponse.class);
                 }
+                Log.i("API SERVICE", response);
                 latch.countDown();
             }
 
