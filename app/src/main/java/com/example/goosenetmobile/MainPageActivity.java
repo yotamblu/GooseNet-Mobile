@@ -108,6 +108,9 @@ public class MainPageActivity extends AppCompatActivity {
                     case "Planned":
                         changeFragment(MainPageActivity.this,plannedWorkoutsFragment,R.id.nav_host_fragment);
                         break;
+                    default:
+                        GooseNetUtil.ShowUpdateToast(MainPageActivity.this);
+                        return false;
                 }
 
 

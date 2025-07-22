@@ -3,6 +3,7 @@ package com.example.goosenetmobile;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,11 +21,25 @@ public class AthleteProfileActivity extends AppCompatActivity {
     private Button addToFlockButton;
     private Button completedWorkoutsButton;
     private Button plannedWorkoutsButton;
+
+    private Button sleepDataButton;
+    private Button trainingSummaryButton;
     private void InitializeButtonObjects(){
         addWorkoutBtn = findViewById(R.id.btnAddWorkout);
         addToFlockButton  = findViewById(R.id.btnAddToFlock);
         completedWorkoutsButton = findViewById(R.id.btnCompletedWorkouts);
         plannedWorkoutsButton = findViewById(R.id.btnPlannedWorkouts);
+        sleepDataButton = findViewById(R.id.btnSleepData);
+        trainingSummaryButton = findViewById(R.id.btnTrainingSummary);
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GooseNetUtil.ShowUpdateToast(AthleteProfileActivity.this);
+
+            }
+        };
+        sleepDataButton.setOnClickListener(listener);
+        trainingSummaryButton.setOnClickListener(listener);
     }
 
     @Override

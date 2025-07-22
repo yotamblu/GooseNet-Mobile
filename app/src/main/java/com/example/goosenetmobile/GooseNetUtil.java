@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.util.Base64;
+import android.widget.Toast;
 
 import java.security.MessageDigest;
 
@@ -22,6 +23,11 @@ public class GooseNetUtil {
     public static String getApiKey(Context context) {
        return PreferenceManager.getDefaultSharedPreferences(context).getString("apiKey","");
     }
+
+    public static void ShowUpdateToast(Context context){
+        Toast.makeText(context, "Wait for the update to use this one", Toast.LENGTH_SHORT).show();
+    }
+
 
 
     public static boolean isLoggedIn(Context context){
