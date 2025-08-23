@@ -28,7 +28,7 @@ public class CustomLapChartView extends View {
     private List<FinalLap> laps = new ArrayList<>();
 
 
-    private static final float MIN_BAR_HEIGHT_PX = 24f; // minimal visible height for slowest lap
+    private static final float MIN_BAR_HEIGHT_PX = 24f;
 
 
     public CustomLapChartView(Context context) {
@@ -88,7 +88,6 @@ public class CustomLapChartView extends View {
         }
 
 
-        // Compute speeds and find min/max speed
         List<Float> speeds = new ArrayList<>();
         float minSpeed = Float.MAX_VALUE;
         float maxSpeed = Float.MIN_VALUE;
@@ -111,7 +110,6 @@ public class CustomLapChartView extends View {
         if (minSpeed == maxSpeed) maxSpeed = minSpeed + 1f; // avoid division by zero
 
 
-        // Calculate ideal widths with last lap duration divided by 10
         List<Float> idealWidths = new ArrayList<>();
         float sumIdealWidths = 0f;
 
@@ -142,7 +140,6 @@ public class CustomLapChartView extends View {
         for (int i = 0; i < laps.size(); i++) {
             float lapWidth = idealWidths.get(i) * scale;
             if (i == laps.size() - 1) {
-                // Fix rounding error on last bar to fill full width exactly
                 lapWidth = viewWidth - left;
             }
 
