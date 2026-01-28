@@ -344,25 +344,37 @@ public class WorkoutActivity extends AppCompatActivity {
 
         }
         // 5. Profile image (if you base64 encoded it into the intent)
-
-        // 6. Workout map (assumes you have polyline coords as JSON string)
-        if (workoutCoordsJsonStr != null && !workoutCoordsJsonStr.isEmpty()) {
+// 6. Workout map (hide if no coordinates)
+        if (workoutCoordsJsonStr == null || workoutCoordsJsonStr.isEmpty()) {
+            workoutMap.setVisibility(View.GONE);
+        } else {
             try {
                 List<GeoPoint> points = parseJsonToGeoPoints(workoutCoordsJsonStr);
-                if (!points.isEmpty()) {
+
+                if (points.isEmpty()) {
+                    workoutMap.setVisibility(View.GONE);
+                } else {
+                    workoutMap.setVisibility(View.VISIBLE);
+                    workoutMap.getOverlays().clear();
+
                     Polyline polyline = new Polyline();
                     polyline.setPoints(points);
                     polyline.setColor(Color.BLUE);
+                    polyline.setWidth(8f);
                     workoutMap.getOverlays().add(polyline);
-                    Pair<GeoPoint,Double> bestCenterAndZoom = getBestCenterAndZoom(points);
-                    workoutMap.getController().setZoom(bestCenterAndZoom.second);
-                    GeoPoint center =  bestCenterAndZoom.first;
-                    workoutMap.getController().setCenter(center);
+
+                    Pair<GeoPoint, Double> bestCenterAndZoom = getBestCenterAndZoom(points);
+                    if (bestCenterAndZoom != null && bestCenterAndZoom.first != null) {
+                        workoutMap.getController().setZoom(bestCenterAndZoom.second);
+                        workoutMap.getController().setCenter(bestCenterAndZoom.first);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                workoutMap.setVisibility(View.GONE);
             }
         }
+
 
 
     }

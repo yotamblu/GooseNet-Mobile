@@ -275,13 +275,14 @@ public class PlannedWorkoutActivity extends AppCompatActivity {
         InitializeViews();
         showBlockingProgressDialog();
         String workoutId = getIntent().getStringExtra("workoutId");
-        Bitmap profilePicData = (Bitmap) getIntent().getParcelableExtra("profilePicData");
-        imageViewCoach.setImageBitmap(profilePicData);
         new Thread(() ->{
+            Bitmap bitmap = ApiService.getProfilePicBitmap(getIntent().getStringExtra("coachName"));
+
             PlannedWorkoutResponse workoutData = ApiService.getPlannedWorkoutById(workoutId);
             String workoutMessage  = workoutData.getPlannedWorkoutJson();
             PlannedWorkout workoutObject = workoutData.getWorokutObject();
             runOnUiThread(() ->{
+                imageViewCoach.setImageBitmap(bitmap);
                 textViewDate.setText(workoutObject.getDate());
                 textViewWorkoutName.setText(workoutObject.getWorkoutName());
                 textViewDescription.setText(workoutObject.getDescription());

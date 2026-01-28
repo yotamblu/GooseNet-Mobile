@@ -86,6 +86,8 @@ public class AthleteWorkoutsFragment extends Fragment {
 
         // Example: Set initial date (optional)
         dateEditText.setText("Select A date");
+        title.setText("View your completed workouts");
+
         if(((Activity)requireContext()) instanceof MainPageActivity){
             athleteName = PreferenceManager.getDefaultSharedPreferences(requireContext()).getString(GooseNetUtil.IS_LOGGEDIN_KEY,"");
             title.setText("View your completed workouts");

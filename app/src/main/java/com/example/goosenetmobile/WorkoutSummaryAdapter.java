@@ -188,34 +188,40 @@ public class WorkoutSummaryAdapter extends BaseAdapter {
         Configuration.getInstance().setUserAgentValue(context.getPackageName());
 
         List<GeoPoint> points = new ArrayList<>();
-        JSONArray coordsArray = null;
+
         try {
-            coordsArray = new JSONArray(workout.getWorkoutCoordsJsonStr());
+            JSONArray coordsArray = new JSONArray(workout.getWorkoutCoordsJsonStr());
             for (int i = 0; i < coordsArray.length(); i++) {
                 JSONArray latLng = coordsArray.getJSONArray(i);
                 double lat = latLng.getDouble(0);
                 double lon = latLng.getDouble(1);
-                if(lat != 0 && lon != 0){
+                if (lat != 0 && lon != 0) {
                     points.add(new GeoPoint(lat, lon));
-
                 }
             }
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
+// 🟦 If no coordinates, hide the map
+        if (points.isEmpty()) {
+            holder.workoutMapView.setVisibility(View.GONE);
+        } else {
+            holder.workoutMapView.setVisibility(View.VISIBLE);
+            holder.workoutMapView.getOverlays().clear();
 
+            Pair<GeoPoint, Double> centerAndZoom = getBestCenterAndZoom(points);
+            if (centerAndZoom != null && centerAndZoom.first != null) {
+                holder.workoutMapView.getController().setCenter(centerAndZoom.first);
+                holder.workoutMapView.getController().setZoom(centerAndZoom.second - 0.3);
+            }
 
-        Pair<GeoPoint, Double> centerAndZoom = getBestCenterAndZoom(points);
-
-        // Center the map on a location
-        holder.workoutMapView.getController().setCenter(centerAndZoom.first);
-        holder.workoutMapView.getController().setZoom(centerAndZoom.second -0.3);
-        Polyline polyline = new Polyline();
-        polyline.setPoints(points);
-        polyline.setWidth(8f);
-        polyline.setColor(Color.BLUE);
-        holder.workoutMapView.getOverlayManager().add(polyline);
+            Polyline polyline = new Polyline();
+            polyline.setPoints(points);
+            polyline.setWidth(8f);
+            polyline.setColor(Color.BLUE);
+            holder.workoutMapView.getOverlayManager().add(polyline);
+        }
 
         // Workout Name
         holder.workoutNameTextView.setText(workout.getWorkoutName() != null ? workout.getWorkoutName() : "");

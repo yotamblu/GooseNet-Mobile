@@ -102,6 +102,7 @@ public class ProfileFragment extends Fragment {
                 .getDefaultSharedPreferences(requireContext()).getString("loggedInUserName",""));
         editProfileButton = view.findViewById(R.id.editProfileButton);
         logoutButton = view.findViewById(R.id.logoutButton);
+        editProfileButton = view.findViewById(R.id.editProfileButton);
         connectGarminButton = view.findViewById(R.id.connectGarminButton);
         // Setup swipe to refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -117,6 +118,13 @@ public class ProfileFragment extends Fragment {
             PreferenceManager.getDefaultSharedPreferences(requireContext()).edit().clear().apply();
                     startActivity(new Intent(requireContext(), LoginActivity.class));
                  requireActivity().finish();
+        });
+
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(requireContext(), EditProfileMenuActivity.class));
+            }
         });
 
         connectGarminButton.setOnClickListener(v ->{

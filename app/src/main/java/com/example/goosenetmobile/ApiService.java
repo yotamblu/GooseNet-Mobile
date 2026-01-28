@@ -28,6 +28,7 @@ import com.example.goosenetmobile.classes.Workout;
 import com.example.goosenetmobile.classes.WorkoutExtensiveData;
 import com.example.goosenetmobile.classes.WorkoutSummary;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -47,7 +48,75 @@ public class ApiService {
 
 
 
-    final static  String GOOSEAPI_BASE_URL = "https://gooseapi.bsite.net/api";
+    final static  String GOOSEAPI_BASE_URL = "https://gooseapi.ddns.net/api";
+
+
+    public static boolean changeProfilePic(String base64String, boolean isRevert , String apiKey){
+        String requestUrl = GOOSEAPI_BASE_URL + "/editProfile/changePic?apiKey=" + apiKey + "&isRevert=" + String.valueOf(isRevert);
+        String data = "{\"PicString\":\"" + base64String +"\"}";
+        boolean[] result = {false};
+        CountDownLatch latch = new CountDownLatch(1);
+        HttpsHelper.sendPost(requestUrl, data, new HttpsHelper.HttpCallback() {
+            @Override
+            public void onSuccess(String response) {
+                result[0] = JsonParser
+                        .parseString(response).
+                        getAsJsonObject().
+                        get("message").getAsString()
+                        .equals("Profile Picture Updated Successfully");
+                latch.countDown();
+
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                System.out.println("ERR:" + ex.getMessage());
+                latch.countDown();
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return  result[0];
+    }
+
+    public static boolean changePassword(String newPassword,String apiKey){
+         String requestUrl = GOOSEAPI_BASE_URL + "/editProfile/changePassword?apiKey=" + apiKey;
+         boolean[] result =  {false};
+         CountDownLatch latch = new CountDownLatch(1);
+         String data =  "{" +
+                 "\"NewPassword\":\"" + newPassword + "\"" +
+                 "}";
+         System.out.println(data);
+         HttpsHelper.sendPost(requestUrl, data, new HttpsHelper.HttpCallback() {
+             @Override
+             public void onSuccess(String response) {
+                 result[0] = JsonParser
+                         .parseString(response).
+                         getAsJsonObject().
+                         get("message").getAsString()
+                         .equals("password changed successfully");
+                 latch.countDown();
+             }
+
+             @Override
+             public void onError(Exception ex) {
+                System.out.println("ERR:" + ex.getMessage());
+                 latch.countDown();
+             }
+         });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return  result[0];
+    }
+
+
     public static PlannedWorkoutResponse getPlannedWorkoutById(String workoutId){
         final PlannedWorkoutResponse[] result = {null};
         String requestUrl = GOOSEAPI_BASE_URL + "/plannedWorkout/byId?id=" + workoutId;
@@ -87,13 +156,14 @@ public class ApiService {
         HttpsHelper.sendGet(requestUrl, new HttpsHelper.HttpCallback() {
             @Override
             public void onSuccess(String response) {
-                if(JsonParser.parseString(response).isJsonArray()){
-                    Type listType = new TypeToken<List<PlannedWorkout>>() {}.getType();
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 
-                    // Deserialize JSON string into List<Person>
-                    List<PlannedWorkout> plannedWorkouts = new Gson().fromJson(response, listType);
-                    result[0] = plannedWorkouts;
-                }
+                JsonElement workoutsElement = jsonObject.get("runningWorkouts");
+
+                Type listType = new TypeToken<List<PlannedWorkout>>() {}.getType();
+                result[0] = gson.fromJson(workoutsElement, listType);
+
                 latch.countDown();
             }
 
@@ -193,13 +263,18 @@ public class ApiService {
         String apiKey = PreferenceManager.getDefaultSharedPreferences(context).getString("apiKey","");
         CountDownLatch latch = new CountDownLatch(1);
         final List<WorkoutSummary>[] workoutList = new ArrayList[1];
-        String requestUrl = GOOSEAPI_BASE_URL + "/workoutSummary?apiKey=" + apiKey + "&userName=" + athleteName + "&date=" + date;
+        String requestUrl = GOOSEAPI_BASE_URL + "/workoutSummary?apiKey=" + apiKey + "&athleteName=" + athleteName + "&date=" + date;
         HttpsHelper.sendGet(requestUrl, new HttpsHelper.HttpCallback() {
             @Override
             public void onSuccess(String response) {
                 Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
+
+                JsonElement workoutsElement = jsonObject.get("runningWorkouts");
+
                 Type listType = new TypeToken<List<WorkoutSummary>>() {}.getType();
-                workoutList[0] =  gson.fromJson(response, listType);
+                workoutList[0] = gson.fromJson(workoutsElement, listType);
+
                 latch.countDown();
             }
 

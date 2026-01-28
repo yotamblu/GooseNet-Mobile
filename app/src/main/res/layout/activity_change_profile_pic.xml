@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Profile Picture"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Current Profile Image -->
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@android:drawable/ic_menu_camera"
+        android:scaleType="centerCrop"
+        android:background="@drawable/circle_background"
+        android:padding="4dp"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Pick from Gallery -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/selectImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select from Gallery"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:icon="@android:drawable/ic_menu_gallery"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Revert to Default -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/revertButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Revert to Default"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:icon="@android:drawable/ic_menu_revert"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Save/Upload -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:enabled="false"
+        app:icon="@android:drawable/ic_menu_save"/>
+
+</LinearLayout>

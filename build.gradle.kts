@@ -17,7 +17,7 @@ buildscript {
 
 // ✅ Correct extra property setup
 extra.set("geckoviewChannel", "nightly")
-extra.set("geckoviewVersion", "127.0.20240618110440/")
+extra.set("geckoviewVersion", "127.0.20240618110440")
 
 
 allprojects {

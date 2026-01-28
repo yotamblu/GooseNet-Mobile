@@ -319,8 +319,8 @@ public class PlannedWorkoutAdapter extends BaseAdapter {
         holder.mainCardView = convertView.findViewById(R.id.plannedWorkoutCard);
         holder.mainCardView.setOnClickListener(v ->{
             Intent intent = new Intent(context,PlannedWorkoutActivity.class);
-            intent.putExtra("profilePicData",profilePicBitmap[0]);
             intent.putExtra("workoutId",workout.getWorkoutId());
+            intent.putExtra("coachName",workout.getCoachName());
             context.startActivity(intent);
         });
 
