@@ -48,7 +48,7 @@ public class ApiService {
 
 
 
-    final static  String GOOSEAPI_BASE_URL = "https://gooseapi.ddns.net/api";
+    final static  String GOOSEAPI_BASE_URL = "https://api.goosenet.space/api";
 
 
     public static boolean changeProfilePic(String base64String, boolean isRevert , String apiKey){
