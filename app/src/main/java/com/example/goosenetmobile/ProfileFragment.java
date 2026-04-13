@@ -159,8 +159,9 @@ public class ProfileFragment extends Fragment {
     private void refreshProfileData() {
         new Thread(() -> {
 
-            Bitmap profilePic = ApiService.getProfilePicBitmap(PreferenceManager
-                    .getDefaultSharedPreferences(requireContext()).getString("loggedInUserName",""));
+            String userName = PreferenceManager
+                    .getDefaultSharedPreferences(requireContext()).getString("loggedInUserName", "");
+            String profilePicRaw = ApiService.getProfilePicRaw(userName);
 
             if(shouldSeeConnectButton()){
                 new Handler(Looper.getMainLooper()).post(() -> {
@@ -174,12 +175,24 @@ public class ProfileFragment extends Fragment {
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 try {
+                    Bitmap profilePic = GooseNetUtil.base64ToBitmap(profilePicRaw);
+                    if (profilePic != null) {
+                        Glide.with(requireContext())
+                                .load(profilePic)
+                                .circleCrop()
+                                .into(profileImage);
+                    } else {
+                        Glide.with(requireContext())
+                                .asGif()
+                                .load(R.drawable.loading)
+                                .circleCrop()
+                                .into(profileImage);
+                    }
+                } catch (Exception ex) {
                     Glide.with(requireContext())
-                            .load(profilePic) // this can be a Bitmap, Uri, or File
+                            .load(profilePicRaw)
                             .circleCrop()
                             .into(profileImage);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
                 }
 
                 profileImage.setBackgroundResource(R.drawable.circle_background);

@@ -23,6 +23,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -32,7 +34,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainPageActivity extends AppCompatActivity {
-
+    private NetworkChangeReceiver networkReceiver;
     BottomNavigationView bottomNavBar;
     private ProfileFragment profileFragment;
     private ConnectAthleteFragment  connectToAthleteFragment;
@@ -75,7 +77,7 @@ public class MainPageActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        networkReceiver = new NetworkChangeReceiver();
         Toast.makeText(this, PreferenceManager.getDefaultSharedPreferences(this).getString("loggedInUserName",""), Toast.LENGTH_SHORT).show();
         initializeObjects();
         InitializeFragments();
@@ -145,4 +147,20 @@ public class MainPageActivity extends AppCompatActivity {
         }).start();
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Listen for connectivity changes
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Unregister to avoid memory leaks
+        unregisterReceiver(networkReceiver);
+    }
+
 }

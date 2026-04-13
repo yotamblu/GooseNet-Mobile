@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 
+import com.bumptech.glide.Glide;
 import com.example.goosenetmobile.R;
 import com.example.goosenetmobile.classes.FinalLap;
 import com.example.goosenetmobile.classes.PlannedInterval;
@@ -299,11 +300,10 @@ public class PlannedWorkoutAdapter extends BaseAdapter {
         // Set coach name
         holder.coachName.setText(workout.getCoachName());
 
-        // Set profile pic - you can load from Base64 or leave it as default drawable
-        final Bitmap[] profilePicBitmap = {null};
+        final String[] profilePicRaw = {""};
         CountDownLatch latch = new CountDownLatch(1);
         new Thread(() ->{
-            profilePicBitmap[0] = ApiService.getProfilePicBitmap(workout.getCoachName());
+            profilePicRaw[0] = ApiService.getProfilePicRaw(workout.getCoachName());
             latch.countDown();
         }).start();
         try {
@@ -311,7 +311,16 @@ public class PlannedWorkoutAdapter extends BaseAdapter {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        holder.coachProfilePic.setImageBitmap(profilePicBitmap[0]);
+        try {
+            Bitmap bmp = GooseNetUtil.base64ToBitmap(profilePicRaw[0]);
+            if (bmp != null) {
+                holder.coachProfilePic.setImageBitmap(bmp);
+            } else {
+                holder.coachProfilePic.setImageResource(R.drawable.loading);
+            }
+        } catch (Exception ex) {
+            Glide.with(context).load(profilePicRaw[0]).into(holder.coachProfilePic);
+        }
         List<FinalLap> laps = WorkoutConverter.convertPlannedIntervalsToFinalLaps(workout.getIntervals());
 
         holder.lapChartView.setLaps(laps,null);

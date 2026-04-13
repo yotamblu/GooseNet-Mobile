@@ -13,6 +13,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AthleteProfileActivity extends AppCompatActivity {
@@ -22,15 +24,11 @@ public class AthleteProfileActivity extends AppCompatActivity {
     private Button completedWorkoutsButton;
     private Button plannedWorkoutsButton;
 
-    private Button sleepDataButton;
-    private Button trainingSummaryButton;
     private void InitializeButtonObjects(){
         addWorkoutBtn = findViewById(R.id.btnAddWorkout);
         addToFlockButton  = findViewById(R.id.btnAddToFlock);
         completedWorkoutsButton = findViewById(R.id.btnCompletedWorkouts);
         plannedWorkoutsButton = findViewById(R.id.btnPlannedWorkouts);
-        sleepDataButton = findViewById(R.id.btnSleepData);
-        trainingSummaryButton = findViewById(R.id.btnTrainingSummary);
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -38,8 +36,6 @@ public class AthleteProfileActivity extends AppCompatActivity {
 
             }
         };
-        sleepDataButton.setOnClickListener(listener);
-        trainingSummaryButton.setOnClickListener(listener);
     }
 
     @Override
@@ -60,11 +56,16 @@ public class AthleteProfileActivity extends AppCompatActivity {
         TextView athleteNameTextView = findViewById(R.id.usernameText);
         athleteNameTextView.setText(athleteName);
         CircleImageView profileImageView = findViewById(R.id.profileImage);
-        Bitmap bmp = GooseNetUtil.base64ToBitmap(imageData);
-        if (bmp != null) {
-            profileImageView.setImageBitmap(bmp);
-        } else {
-            profileImageView.setImageResource(R.drawable.loading);
+        try{
+            Bitmap bmp = GooseNetUtil.base64ToBitmap(imageData);
+            if (bmp != null) {
+                profileImageView.setImageBitmap(bmp);
+            } else {
+                profileImageView.setImageResource(R.drawable.loading);
+            }
+
+        }catch (Exception ex){
+            Glide.with(AthleteProfileActivity.this).load(imageData).into(profileImageView);
         }
         Button backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> {

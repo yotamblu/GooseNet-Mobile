@@ -20,6 +20,7 @@ import com.example.goosenetmobile.classes.PlannedInterval;
 import com.example.goosenetmobile.classes.PlannedWorkout;
 import com.example.goosenetmobile.classes.PlannedWorkoutResponse;
 import com.example.goosenetmobile.classes.WorkoutConverter;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -276,13 +277,23 @@ public class PlannedWorkoutActivity extends AppCompatActivity {
         showBlockingProgressDialog();
         String workoutId = getIntent().getStringExtra("workoutId");
         new Thread(() ->{
-            Bitmap bitmap = ApiService.getProfilePicBitmap(getIntent().getStringExtra("coachName"));
+            String coachName = getIntent().getStringExtra("coachName");
+            String profilePicRaw = ApiService.getProfilePicRaw(coachName);
 
             PlannedWorkoutResponse workoutData = ApiService.getPlannedWorkoutById(workoutId);
             String workoutMessage  = workoutData.getPlannedWorkoutJson();
             PlannedWorkout workoutObject = workoutData.getWorokutObject();
             runOnUiThread(() ->{
-                imageViewCoach.setImageBitmap(bitmap);
+                try {
+                    Bitmap bitmap = GooseNetUtil.base64ToBitmap(profilePicRaw);
+                    if (bitmap != null) {
+                        imageViewCoach.setImageBitmap(bitmap);
+                    } else {
+                        imageViewCoach.setImageResource(R.drawable.loading);
+                    }
+                } catch (Exception ex) {
+                    Glide.with(PlannedWorkoutActivity.this).load(profilePicRaw).into(imageViewCoach);
+                }
                 textViewDate.setText(workoutObject.getDate());
                 textViewWorkoutName.setText(workoutObject.getWorkoutName());
                 textViewDescription.setText(workoutObject.getDescription());

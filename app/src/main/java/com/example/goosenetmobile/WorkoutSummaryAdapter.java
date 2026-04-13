@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 
+import com.bumptech.glide.Glide;
 import com.example.goosenetmobile.R;
 import com.example.goosenetmobile.classes.WorkoutSummary;
 import com.google.gson.JsonArray;
@@ -234,7 +235,21 @@ public class WorkoutSummaryAdapter extends BaseAdapter {
 
         // Avg Pace in min/km formatted mm:ss (workoutAvgPaceInMinKm assumed to be decimal minutes per km)
         holder.workoutAvgPaceTextView.setText(formatPace(workout.getWorkoutAvgPaceInMinKm()));
-        holder.profilePicImageView.setImageBitmap(getCircularBitmap(GooseNetUtil.base64ToBitmap(workout.getProfilePicData())));
+        String profilePicData = workout.getProfilePicData();
+        try {
+            if (!TextUtils.isEmpty(profilePicData)) {
+                Bitmap raw = GooseNetUtil.base64ToBitmap(profilePicData);
+                if (raw != null) {
+                    holder.profilePicImageView.setImageBitmap(getCircularBitmap(raw));
+                } else {
+                    holder.profilePicImageView.setImageResource(R.drawable.ic_profile);
+                }
+            } else {
+                holder.profilePicImageView.setImageResource(R.drawable.ic_profile);
+            }
+        } catch (Exception ex) {
+            Glide.with(context).load(profilePicData).into(holder.profilePicImageView);
+        }
         // Avg Heart Rate with bpm suffix
         holder.workoutAvgHeartRateTextView.setText(workout.getWorkoutAvgHR() + " bpm");
 

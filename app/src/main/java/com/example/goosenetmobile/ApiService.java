@@ -735,7 +735,11 @@ public class ApiService {
         HttpsHelper.sendGet(GOOSEAPI_BASE_URL + "/profilePic?userName=" + userName, new HttpsHelper.HttpCallback() {
             @Override
             public void onSuccess(String response) {
-                result[0] = GooseNetUtil.base64ToBitmap(response);
+                try {
+                    result[0] = GooseNetUtil.base64ToBitmap(response);
+                } catch (Exception e) {
+                    result[0] = null;
+                }
                 System.out.println(response);
                 latch.countDown();
             }
@@ -755,6 +759,33 @@ public class ApiService {
         return result[0];
 
 
+    }
+
+    /** Raw body from profilePic endpoint (for base64 decode or Glide URL fallback). */
+    public static String getProfilePicRaw(String userName) {
+        if (userName == null || userName.isEmpty()) {
+            return "";
+        }
+        final String[] result = {""};
+        CountDownLatch latch = new CountDownLatch(1);
+        HttpsHelper.sendGet(GOOSEAPI_BASE_URL + "/profilePic?userName=" + userName, new HttpsHelper.HttpCallback() {
+            @Override
+            public void onSuccess(String response) {
+                result[0] = response != null ? response : "";
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                latch.countDown();
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return result[0];
     }
 
     public static boolean AuthUser(String userName,String password) throws  Exception{

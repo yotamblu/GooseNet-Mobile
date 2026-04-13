@@ -46,6 +46,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.google.gson.Gson;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -340,7 +341,20 @@ public class WorkoutActivity extends AppCompatActivity {
         avgHeartRate.setText("Heart Rate: " + workoutAvgHR + " bpm");
 
         if(getIntent().getData() == null){
-            profileImage.setImageBitmap(GooseNetUtil.base64ToBitmap(profilePicData));
+            try {
+                if (profilePicData != null) {
+                    Bitmap bmp = GooseNetUtil.base64ToBitmap(profilePicData);
+                    if (bmp != null) {
+                        profileImage.setImageBitmap(bmp);
+                    } else {
+                        profileImage.setImageResource(R.drawable.loading);
+                    }
+                } else {
+                    profileImage.setImageResource(R.drawable.loading);
+                }
+            } catch (Exception ex) {
+                Glide.with(WorkoutActivity.this).load(profilePicData).into(profileImage);
+            }
 
         }
         // 5. Profile image (if you base64 encoded it into the intent)
@@ -512,9 +526,18 @@ public class WorkoutActivity extends AppCompatActivity {
                 workoutDate = workoutData.getWorkoutDate();
                 athleteNameStr =athleteName;
 
-
+                final String profilePicRaw = ApiService.getProfilePicRaw(athleteNameStr);
                 runOnUiThread(() ->{
-                    profileImage.setImageBitmap(ApiService.getProfilePicBitmap(athleteNameStr));
+                    try {
+                        Bitmap bmp = GooseNetUtil.base64ToBitmap(profilePicRaw);
+                        if (bmp != null) {
+                            profileImage.setImageBitmap(bmp);
+                        } else {
+                            profileImage.setImageResource(R.drawable.loading);
+                        }
+                    } catch (Exception ex) {
+                        Glide.with(WorkoutActivity.this).load(profilePicRaw).into(profileImage);
+                    }
                     initializeActivityData();
 
                 });

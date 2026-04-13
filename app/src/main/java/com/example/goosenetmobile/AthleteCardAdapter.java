@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.goosenetmobile.classes.AthleteCard;
 import com.google.android.material.button.MaterialButton;
 
@@ -70,12 +71,19 @@ public class AthleteCardAdapter extends BaseAdapter {
 
         holder.athleteName.setText(athlete.getAthleteName());
 
-        Bitmap bmp = GooseNetUtil.base64ToBitmap(athlete.getImageData());
-        if (bmp != null) {
-            holder.athleteProfileImage.setImageBitmap(bmp);
-        } else {
-            holder.athleteProfileImage.setImageResource(R.drawable.loading);
+
+        try{
+            Bitmap bmp = GooseNetUtil.base64ToBitmap(athlete.getImageData());
+            if (bmp != null) {
+                holder.athleteProfileImage.setImageBitmap(bmp);
+            } else {
+                holder.athleteProfileImage.setImageResource(R.drawable.loading);
+            }
+
+        }catch (Exception ex){
+            Glide.with(context).load(athlete.getImageData()).into(holder.athleteProfileImage);
         }
+
 
         holder.viewPageButton.setOnClickListener(v ->{
                     Intent athleteProfileIntent = new Intent(context, AthleteProfileActivity.class);
