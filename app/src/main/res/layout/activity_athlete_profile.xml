@@ -107,31 +107,31 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSleepData"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:text="Sleep Data"
-            android:textSize="18sp"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/blue"
-            android:layout_marginBottom="12dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp" />
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/btnSleepData"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="70dp"-->
+<!--            android:text="Sleep Data"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:backgroundTint="@color/blue"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:layout_marginStart="10dp"-->
+<!--            android:layout_marginEnd="10dp" />-->
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnTrainingSummary"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:text="Training Summary"
-            android:textSize="18sp"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/blue"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp" />
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/btnTrainingSummary"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="70dp"-->
+<!--            android:text="Training Summary"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:backgroundTint="@color/blue"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:layout_marginStart="10dp"-->
+<!--            android:layout_marginEnd="10dp" />-->
 
     </LinearLayout>
 </ScrollView>
