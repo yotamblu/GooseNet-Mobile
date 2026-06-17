@@ -146,9 +146,8 @@ public class ApiService {
         return result[0];
     }
 
-    //NO LEADING ZEROS FOR THE DATE!!!!
     public static List<PlannedWorkout> getPlannedWorkoutsByDate(String athleteName, String date,Context context){
-        final List[] result = {null};
+        final List[] result = {new ArrayList<>()};
         String apiKey = PreferenceManager.getDefaultSharedPreferences(context).getString("apiKey","");
         CountDownLatch latch = new CountDownLatch(1);
         String requestUrl = GOOSEAPI_BASE_URL + "/plannedWorkout/byDate?athleteName=" + athleteName + "&apiKey=" + apiKey + "&date=" + date;
@@ -245,15 +244,18 @@ public class ApiService {
             }
         });
 
-        try{
+        try {
             latch.await();
-        }catch (Exception ex){
-
+        } catch (Exception ex) {
+            android.util.Log.e("ApiService", "getWorkoutExtensiveData interrupted", ex);
         }
-        result[0].getWorkoutLaps().get(result[0].getWorkoutLaps().size() - 1).lapDistanceInKilometers /= 100f;
-
-
-        return  result[0];
+        if (result[0] != null
+                && result[0].getWorkoutLaps() != null
+                && !result[0].getWorkoutLaps().isEmpty()) {
+            result[0].getWorkoutLaps()
+                    .get(result[0].getWorkoutLaps().size() - 1).lapDistanceInKilometers /= 100f;
+        }
+        return result[0];
     }
 
 
@@ -263,6 +265,7 @@ public class ApiService {
         String apiKey = PreferenceManager.getDefaultSharedPreferences(context).getString("apiKey","");
         CountDownLatch latch = new CountDownLatch(1);
         final List<WorkoutSummary>[] workoutList = new ArrayList[1];
+        workoutList[0] = new ArrayList<>();
         String requestUrl = GOOSEAPI_BASE_URL + "/workoutSummary?apiKey=" + apiKey + "&athleteName=" + athleteName + "&date=" + date;
         HttpsHelper.sendGet(requestUrl, new HttpsHelper.HttpCallback() {
             @Override
@@ -347,7 +350,6 @@ public class ApiService {
                     throw new RuntimeException(e);
                 }
 
-                // Add each flock name to the top of the result list
                latch.countDown();
             }
 
@@ -410,10 +412,9 @@ public class ApiService {
                     JSONObject jsonResponse = new JSONObject(response);
                     JSONArray flocksArray = jsonResponse.getJSONArray("flocks");
 
-                    // Add each flock name to the top of the result list
                     for (int i = flocksArray.length() - 1; i >= 0; i--) {
                         String flockName = flocksArray.getString(i);
-                        result.add(0, flockName);  // Insert at top
+                        result.add(0, flockName);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -458,7 +459,7 @@ public class ApiService {
                 new HttpsHelper.HttpCallback() {
                     @Override
                     public void onSuccess(String response) {
-                        if(JsonParser.parseString(response).getAsJsonObject().has("meessage")){
+                        if(JsonParser.parseString(response).getAsJsonObject().has("message")){
                             result[0] = true;
                         }else{
                             result[0] = false;
@@ -487,6 +488,7 @@ public class ApiService {
     public static List<AthleteCard> getAthletesData(Context context){
         String apiKey = PreferenceManager.getDefaultSharedPreferences(context).getString("apiKey","");
         List<AthleteCard>[] athleteList = new List[1];
+        athleteList[0] = new ArrayList<>();
         CountDownLatch latch = new CountDownLatch(1);
         HttpsHelper.sendGet(GOOSEAPI_BASE_URL + "/athletes?apiKey=" + apiKey, new HttpsHelper.HttpCallback() {
             @Override
@@ -761,7 +763,6 @@ public class ApiService {
 
     }
 
-    /** Raw body from profilePic endpoint (for base64 decode or Glide URL fallback). */
     public static String getProfilePicRaw(String userName) {
         if (userName == null || userName.isEmpty()) {
             return "";

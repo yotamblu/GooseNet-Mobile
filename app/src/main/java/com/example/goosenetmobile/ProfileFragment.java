@@ -4,19 +4,11 @@ import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,25 +17,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.bumptech.glide.Glide;
 
 public class ProfileFragment extends Fragment {
     public static final int CONNECTED_TO_GARMIN = 111;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageView profileImage;
-    private TextView  usernameText;
+    private TextView usernameText;
     private Button editProfileButton, logoutButton, connectGarminButton;
 
-    // Optional parameters (if you want to keep)
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
 
     public ProfileFragment() {
-        // Required empty public constructor
     }
 
     public static ProfileFragment newInstance(String param1, String param2) {
@@ -67,28 +60,33 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
-    private boolean shouldSeeConnectButton(){
-        return ApiService.getRole(GooseNetUtil.getApiKey(requireContext())).equals("athlete") && !ApiService.isConnectedToGarmin(GooseNetUtil.getApiKey(requireContext()));
+    private boolean shouldSeeConnectButton() {
+        try {
+            if (!isAdded()) return false;
+            String role = ApiService.getRole(GooseNetUtil.getApiKey(requireContext()));
+            boolean connected = ApiService.isConnectedToGarmin(GooseNetUtil.getApiKey(requireContext()));
+            return "athlete".equals(role) && !connected;
+        } catch (Exception e) {
+            Log.e("ProfileFragment", "shouldSeeConnectButton failed", e);
+            return false;
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CONNECTED_TO_GARMIN  && resultCode == RESULT_OK){
+        if (requestCode == CONNECTED_TO_GARMIN && resultCode == RESULT_OK) {
             refreshProfileData();
         }
     }
-    
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Find views
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         profileImage = view.findViewById(R.id.profile_image);
         Glide.with(this)
@@ -99,112 +97,112 @@ public class ProfileFragment extends Fragment {
 
         usernameText = view.findViewById(R.id.usernameText);
         usernameText.setText("@" + PreferenceManager
-                .getDefaultSharedPreferences(requireContext()).getString("loggedInUserName",""));
+                .getDefaultSharedPreferences(requireContext()).getString("loggedInUserName", ""));
         editProfileButton = view.findViewById(R.id.editProfileButton);
         logoutButton = view.findViewById(R.id.logoutButton);
         editProfileButton = view.findViewById(R.id.editProfileButton);
         connectGarminButton = view.findViewById(R.id.connectGarminButton);
-        // Setup swipe to refresh listener
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            // Refresh action: runs in background thread
-               refreshProfileData();
-        });
 
+        swipeRefreshLayout.setOnRefreshListener(this::refreshProfileData);
 
-        //define logout functionality
         logoutButton.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Logout clicked", Toast.LENGTH_SHORT).show();
-
-            PreferenceManager.getDefaultSharedPreferences(requireContext()).edit().clear().apply();
-                    startActivity(new Intent(requireContext(), LoginActivity.class));
-                 requireActivity().finish();
-        });
-
-        editProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(requireContext(), EditProfileMenuActivity.class));
+            try {
+                Toast.makeText(requireContext(), "Logout clicked", Toast.LENGTH_SHORT).show();
+                PreferenceManager.getDefaultSharedPreferences(requireContext()).edit().clear().apply();
+                startActivity(new Intent(requireContext(), LoginActivity.class));
+                requireActivity().finish();
+            } catch (Exception e) {
+                Log.e("ProfileFragment", "Logout failed", e);
             }
         });
 
-        connectGarminButton.setOnClickListener(v ->{
-            startActivityForResult(new Intent(requireContext(), ConnectToGarminActivity.class),CONNECTED_TO_GARMIN);
+        editProfileButton.setOnClickListener(v -> {
+            try {
+                startActivity(new Intent(requireContext(), EditProfileMenuActivity.class));
+            } catch (Exception e) {
+                Log.e("ProfileFragment", "Open edit profile failed", e);
+            }
         });
-        //check if user should have connect to garmin button
-        new Thread(() ->{
-            if(shouldSeeConnectButton()){
+
+        connectGarminButton.setOnClickListener(v -> {
+            try {
+                startActivityForResult(new Intent(requireContext(), ConnectToGarminActivity.class), CONNECTED_TO_GARMIN);
+            } catch (Exception e) {
+                Log.e("ProfileFragment", "Open Garmin connect failed", e);
+            }
+        });
+
+        new Thread(() -> {
+            try {
+                if (!isAdded()) return;
+                boolean show = shouldSeeConnectButton();
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    connectGarminButton.setVisibility(View.VISIBLE);
+                    if (!isAdded()) return;
+                    connectGarminButton.setVisibility(show ? View.VISIBLE : View.GONE);
                 });
-            }else {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    connectGarminButton.setVisibility(View.GONE);
-                });
+            } catch (Exception e) {
+                Log.e("ProfileFragment", "Garmin button visibility check failed", e);
             }
         }).start();
 
-
-        // Optionally trigger initial load here or elsewhere
-        // Show refresh animation
         swipeRefreshLayout.setRefreshing(true);
-
-        // Manually trigger your refresh logic method
         refreshProfileData();
-
-
-
     }
-
 
     private void refreshProfileData() {
         new Thread(() -> {
+            try {
+                if (!isAdded()) return;
+                String userName = PreferenceManager
+                        .getDefaultSharedPreferences(requireContext()).getString("loggedInUserName", "");
+                String profilePicRaw = ApiService.getProfilePicRaw(userName);
 
-            String userName = PreferenceManager
-                    .getDefaultSharedPreferences(requireContext()).getString("loggedInUserName", "");
-            String profilePicRaw = ApiService.getProfilePicRaw(userName);
-
-            if(shouldSeeConnectButton()){
+                boolean show = shouldSeeConnectButton();
+                if (!isAdded()) return;
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    connectGarminButton.setVisibility(View.VISIBLE);
+                    if (!isAdded()) return;
+                    connectGarminButton.setVisibility(show ? View.VISIBLE : View.GONE);
                 });
-            }else {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    connectGarminButton.setVisibility(View.GONE);
-                });
-            }
 
-            new Handler(Looper.getMainLooper()).post(() -> {
-                try {
-                    Bitmap profilePic = GooseNetUtil.base64ToBitmap(profilePicRaw);
-                    if (profilePic != null) {
-                        Glide.with(requireContext())
-                                .load(profilePic)
-                                .circleCrop()
-                                .into(profileImage);
-                    } else {
-                        Glide.with(requireContext())
-                                .asGif()
-                                .load(R.drawable.loading)
-                                .circleCrop()
-                                .into(profileImage);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (!isAdded()) return;
+                    try {
+                        Bitmap profilePic = GooseNetUtil.base64ToBitmap(profilePicRaw);
+                        if (profilePic != null) {
+                            Glide.with(requireContext())
+                                    .load(profilePic)
+                                    .circleCrop()
+                                    .into(profileImage);
+                        } else {
+                            Glide.with(requireContext())
+                                    .asGif()
+                                    .load(R.drawable.loading)
+                                    .circleCrop()
+                                    .into(profileImage);
+                        }
+                    } catch (Exception ex) {
+                        if (!isAdded()) return;
+                        try {
+                            Glide.with(requireContext())
+                                    .load(profilePicRaw)
+                                    .circleCrop()
+                                    .into(profileImage);
+                        } catch (Exception inner) {
+                            Log.e("ProfileFragment", "Failed to load profile picture", inner);
+                        }
                     }
-                } catch (Exception ex) {
-                    Glide.with(requireContext())
-                            .load(profilePicRaw)
-                            .circleCrop()
-                            .into(profileImage);
+                    profileImage.setBackgroundResource(R.drawable.circle_background);
+                    swipeRefreshLayout.setRefreshing(false);
+                });
+            } catch (Exception e) {
+                Log.e("ProfileFragment", "refreshProfileData failed", e);
+                if (isAdded()) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (!isAdded()) return;
+                        swipeRefreshLayout.setRefreshing(false);
+                    });
                 }
-
-                profileImage.setBackgroundResource(R.drawable.circle_background);
-
-                swipeRefreshLayout.setRefreshing(false);
-            });
+            }
         }).start();
     }
-
-
-    // Simulated network calls (replace with your real logic)
-
-
-
 }

@@ -3,7 +3,6 @@ package com.example.goosenetmobile;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -24,18 +23,11 @@ public class AthleteProfileActivity extends AppCompatActivity {
     private Button completedWorkoutsButton;
     private Button plannedWorkoutsButton;
 
-    private void InitializeButtonObjects(){
+    private void InitializeButtonObjects() {
         addWorkoutBtn = findViewById(R.id.btnAddWorkout);
-        addToFlockButton  = findViewById(R.id.btnAddToFlock);
+        addToFlockButton = findViewById(R.id.btnAddToFlock);
         completedWorkoutsButton = findViewById(R.id.btnCompletedWorkouts);
         plannedWorkoutsButton = findViewById(R.id.btnPlannedWorkouts);
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GooseNetUtil.ShowUpdateToast(AthleteProfileActivity.this);
-
-            }
-        };
     }
 
     @Override
@@ -50,51 +42,54 @@ public class AthleteProfileActivity extends AppCompatActivity {
         });
 
         Bundle intentData = getIntent().getExtras();
+        if (intentData == null) {
+            finish();
+            return;
+        }
+
         String athleteName = intentData.getString("athleteName");
         String imageData = intentData.getString("imageData");
 
         TextView athleteNameTextView = findViewById(R.id.usernameText);
         athleteNameTextView.setText(athleteName);
         CircleImageView profileImageView = findViewById(R.id.profileImage);
-        try{
+        try {
             Bitmap bmp = GooseNetUtil.base64ToBitmap(imageData);
             if (bmp != null) {
                 profileImageView.setImageBitmap(bmp);
             } else {
                 profileImageView.setImageResource(R.drawable.loading);
             }
-
-        }catch (Exception ex){
+        } catch (Exception ex) {
             Glide.with(AthleteProfileActivity.this).load(imageData).into(profileImageView);
         }
+
         Button backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> {
-            finish();
-        });
+        backButton.setOnClickListener(v -> finish());
 
         InitializeButtonObjects();
-        addWorkoutBtn.setOnClickListener(v ->{
+
+        addWorkoutBtn.setOnClickListener(v -> {
             Intent intent = new Intent(AthleteProfileActivity.this, AddWorkoutActivity.class);
-            intent.putExtra("athleteName",athleteName);
+            intent.putExtra("athleteName", athleteName);
             startActivity(intent);
         });
 
-        addToFlockButton.setOnClickListener(v ->{
+        addToFlockButton.setOnClickListener(v -> {
             Intent intent = new Intent(AthleteProfileActivity.this, AddToFlockActivity.class);
-            intent.putExtra("athleteName",athleteName);
+            intent.putExtra("athleteName", athleteName);
             startActivity(intent);
-
         });
 
-        completedWorkoutsButton.setOnClickListener(v ->{
+        completedWorkoutsButton.setOnClickListener(v -> {
             Intent intent = new Intent(AthleteProfileActivity.this, CompletedWorkoutsActivity.class);
-            intent.putExtra("athleteName",athleteName);
+            intent.putExtra("athleteName", athleteName);
             startActivity(intent);
         });
 
-        plannedWorkoutsButton.setOnClickListener(v ->{
+        plannedWorkoutsButton.setOnClickListener(v -> {
             Intent intent = new Intent(AthleteProfileActivity.this, PlannedWorkoutsActivity.class);
-            intent.putExtra("athleteName",athleteName);
+            intent.putExtra("athleteName", athleteName);
             startActivity(intent);
         });
     }

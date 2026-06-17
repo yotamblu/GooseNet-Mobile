@@ -1,9 +1,11 @@
 package com.example.goosenetmobile;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +17,7 @@ public class CoachConnectionConfirmationActivity extends AppCompatActivity {
 
     private Button btnConfirm, btnCancel;
     private TextView confirmationText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,37 +28,44 @@ public class CoachConnectionConfirmationActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         Bundle extras = getIntent().getExtras();
-        String coachName = extras.getString("coachName");
-        String coachId = extras.getString("coachId");
-        btnConfirm  = findViewById(R.id.btnConfirm);
+        if (extras == null) {
+            finish();
+            return;
+        }
+
+        String coachName = extras.getString("coachName", "");
+        String coachId = extras.getString("coachId", "");
+
+        if (coachName.isEmpty() || coachId.isEmpty()) {
+            finish();
+            return;
+        }
+
+        btnConfirm = findViewById(R.id.btnConfirm);
         btnCancel = findViewById(R.id.btnCancel);
-        confirmationText =findViewById(R.id.confirmationMessage);
+        confirmationText = findViewById(R.id.confirmationMessage);
         confirmationText.setText("Are you sure you want to connect with coach " + coachName + "?");
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new Thread(() ->{
-                    boolean request =  ApiService.connectToCoach(coachId,CoachConnectionConfirmationActivity.this);
 
+        btnConfirm.setOnClickListener(v -> {
+            new Thread(() -> {
+                try {
+                    boolean request = ApiService.connectToCoach(coachId, CoachConnectionConfirmationActivity.this);
                     runOnUiThread(() -> {
-
                         setResult(request ? RESULT_OK : RESULT_CANCELED);
                         finish();
                     });
-                }).start();
-            }
+                } catch (Exception e) {
+                    Log.e("CoachConfirmation", "Failed to connect to coach", e);
+                    runOnUiThread(() -> {
+                        Toast.makeText(CoachConnectionConfirmationActivity.this,
+                                "Failed to connect to coach", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }).start();
         });
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-
-
-
+        btnCancel.setOnClickListener(v -> finish());
     }
 }

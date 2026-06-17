@@ -1,14 +1,15 @@
 package com.example.goosenetmobile;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,14 +27,14 @@ public class AddToFlockActivity extends AppCompatActivity {
     private TextView title;
     private ListView flockCardsList;
     private Dialog progressDialog;
-    private Dialog progressDialog2;
     private LinearLayout noMoreFlocks;
+
     private void showBlockingProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
             View view = LayoutInflater.from(this).inflate(R.layout.progress_loader_fetching_flocks, null);
             progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            progressDialog.setCancelable(false); // Block back button
+            progressDialog.setCancelable(false);
             progressDialog.setContentView(view);
         }
         progressDialog.show();
@@ -50,13 +51,11 @@ public class AddToFlockActivity extends AppCompatActivity {
             progressDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
             View view = LayoutInflater.from(this).inflate(R.layout.flock_addition_progress_loader, null);
             progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            progressDialog.setCancelable(false); // Block back button
+            progressDialog.setCancelable(false);
             progressDialog.setContentView(view);
         }
         progressDialog.show();
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,38 +67,50 @@ public class AddToFlockActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        String athleteName = getIntent().getExtras().get("athleteName").toString();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) {
+            finish();
+            return;
+        }
+        String athleteName = extras.getString("athleteName", "");
+        if (athleteName.isEmpty()) {
+            finish();
+            return;
+        }
+
         noMoreFlocks = findViewById(R.id.noMoreFlocks);
         flockCardsList = findViewById(R.id.flockCardsListView);
         title = findViewById(R.id.addToFlockTextView);
         title.setText("Select Flock To add @" + athleteName + " To:");
         showBlockingProgressDialog();
-        new Thread(() ->{
 
-            List<String> potentialFlockNames = ApiService.getPotentialFlocks(athleteName,AddToFlockActivity.this);
-            List<FlockCard> potentialFlockCards = new ArrayList<>();
-            for (String flockName:
-                 potentialFlockNames) {
-                potentialFlockCards.add(new FlockCard(flockName));
-            }
-            AddToFlockCardAdapter adapter = new AddToFlockCardAdapter(AddToFlockActivity.this,potentialFlockCards);
-            runOnUiThread(() -> {
-                if(potentialFlockNames.size() > 0){
-                     noMoreFlocks.setVisibility(View.GONE);
+        new Thread(() -> {
+            try {
+                List<String> potentialFlockNames = ApiService.getPotentialFlocks(athleteName, AddToFlockActivity.this);
+                List<FlockCard> potentialFlockCards = new ArrayList<>();
+                if (potentialFlockNames != null) {
+                    for (String flockName : potentialFlockNames) {
+                        potentialFlockCards.add(new FlockCard(flockName));
+                    }
                 }
-                hideBlockingProgressDialog();
-                flockCardsList.setAdapter(adapter);
-
-            });
+                AddToFlockCardAdapter adapter = new AddToFlockCardAdapter(AddToFlockActivity.this, potentialFlockCards);
+                runOnUiThread(() -> {
+                    hideBlockingProgressDialog();
+                    if (potentialFlockNames == null || potentialFlockNames.isEmpty()) {
+                        noMoreFlocks.setVisibility(View.VISIBLE);
+                    } else {
+                        noMoreFlocks.setVisibility(View.GONE);
+                    }
+                    flockCardsList.setAdapter(adapter);
+                });
+            } catch (Exception e) {
+                Log.e("AddToFlockActivity", "Failed to load flocks", e);
+                runOnUiThread(() -> {
+                    hideBlockingProgressDialog();
+                    Toast.makeText(AddToFlockActivity.this, "Failed to load flocks", Toast.LENGTH_SHORT).show();
+                });
+            }
         }).start();
-
-
-
-
-
-
-
-
-
     }
 }
